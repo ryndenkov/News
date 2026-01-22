@@ -1,4 +1,4 @@
-package com.ryndenkov.news
+package com.ryndenkov.news.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ryndenkov.news.ui.theme.NewsTheme
+import com.ryndenkov.news.presentation.ui.theme.NewsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

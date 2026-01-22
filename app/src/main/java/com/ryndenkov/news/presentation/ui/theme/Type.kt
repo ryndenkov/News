@@ -1,4 +1,4 @@
-package com.ryndenkov.news.ui.theme
+package com.ryndenkov.news.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
