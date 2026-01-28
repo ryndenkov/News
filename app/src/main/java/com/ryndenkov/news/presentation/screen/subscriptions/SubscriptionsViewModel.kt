@@ -72,7 +72,7 @@ class SubscriptionsViewModel @Inject constructor(
 
             SubscriptionsCommand.RefreshData -> {
                 viewModelScope.launch {
-                    updateSubscribedArticlesUseCase
+                    updateSubscribedArticlesUseCase()
                 }
             }
 
