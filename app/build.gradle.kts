@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,14 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
+
+private val keystorePropertiesFile = rootProject.file("keystore.properties")
+private val keystoreProperties = keystorePropertiesFile.inputStream().use { inputStream ->
+    Properties().apply {
+        load(inputStream)
+    }
+}
+private val apiKey = keystoreProperties.getProperty("NEWS_API_KEY")
 
 android {
     namespace = "com.ryndenkov.news"
@@ -22,6 +32,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "NEWS_API_KEY", apiKey)
     }
 
     buildTypes {
@@ -45,6 +57,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -64,6 +77,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.appcompat)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
@@ -89,4 +103,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.kotlinx.serialization)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work.v100)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.datastore.preferences)
 }

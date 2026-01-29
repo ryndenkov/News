@@ -2,11 +2,14 @@ package com.ryndenkov.news.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.ryndenkov.news.data.local.NewsDao
 import com.ryndenkov.news.data.local.NewsDatabase
 import com.ryndenkov.news.data.remote.NewsApiService
 import com.ryndenkov.news.data.repository.NewsRepositoryImpl
+import com.ryndenkov.news.data.repository.SettingsRepositoryImpl
 import com.ryndenkov.news.domain.repository.NewsRepository
+import com.ryndenkov.news.domain.repository.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,11 +30,23 @@ interface DataModule {
 
     @Binds
     @Singleton
+    fun bindSettingsRepository(
+        impl: SettingsRepositoryImpl
+    ): SettingsRepository
+
+    @Binds
+    @Singleton
     fun bindNewsRepository(
         impl: NewsRepositoryImpl
     ): NewsRepository
 
     companion object {
+
+        @Provides
+        @Singleton
+        fun provideWorkManager(
+            @ApplicationContext context: Context,
+        ): WorkManager = WorkManager.getInstance(context)
 
         @Provides
         @Singleton

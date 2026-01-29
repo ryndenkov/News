@@ -2,6 +2,7 @@
 
 package com.ryndenkov.news.presentation.screen.subscriptions
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,12 +43,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.ryndenkov.news.R
@@ -148,7 +151,7 @@ private fun SubscriptionsTopBar(
     TopAppBar(
         modifier = modifier,
         title = {
-            Text(text = stringResource(R.string.subscritpions_title))
+            Text(text = stringResource(R.string.subscriptions_title))
         },
         actions = {
             Icon(
@@ -186,7 +189,7 @@ private fun SubscriptionsTopBar(
 }
 
 @Composable
-private fun SubscriptionCheap(
+private fun SubscriptionChip(
     modifier: Modifier = Modifier,
     topic: String,
     isSelected: Boolean,
@@ -228,7 +231,7 @@ private fun Subscriptions(
     onSubscribeButtonClick: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -270,7 +273,7 @@ private fun Subscriptions(
             ) {
                 subscriptions.forEach { (topic, isSelected) ->
                     item(key = topic) {
-                        SubscriptionCheap(
+                        SubscriptionChip(
                             topic = topic,
                             isSelected = isSelected,
                             onSubscriptionClick = onTopicClick,
@@ -308,7 +311,7 @@ private fun ArticleCard(
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(200.dp)
+                    .heightIn(max = 200.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -344,7 +347,7 @@ private fun ArticleCard(
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = article.publishedAd.formatDate(),
+                text = article.publishedAt.formatDate(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp
             )
@@ -358,9 +361,14 @@ private fun ArticleCard(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            val context = LocalContext.current
+
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, article.url.toUri())
+                    context.startActivity(intent)
+                }
             ) {
                 Icon(
                     imageVector = CustomIcons.OpenInNew,
@@ -369,10 +377,15 @@ private fun ArticleCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = stringResource(R.string.read))
             }
-
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "${article.title}\n\n${article.url}")
+                    }
+                    context.startActivity(intent)
+                }
             ) {
                 Icon(
                     imageVector = Icons.Default.Share,
@@ -382,6 +395,7 @@ private fun ArticleCard(
                 Text(text = stringResource(R.string.share))
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

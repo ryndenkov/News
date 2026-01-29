@@ -1,12 +1,14 @@
 package com.ryndenkov.news.data.remote
 
+import com.ryndenkov.news.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NewsApiService {
 
-    @GET("/v2/everything?apiKey=49d283518b2f454fa661de86c7e6ede2")
+    @GET("/v2/everything?apiKey=${BuildConfig.NEWS_API_KEY}")
     suspend fun loadArticles(
-        @Query("q") topic: String
+        @Query("q") topic: String,
+        @Query("language") language: String
     ): NewsResponseDto
 }

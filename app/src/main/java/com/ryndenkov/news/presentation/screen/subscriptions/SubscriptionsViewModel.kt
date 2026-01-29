@@ -34,7 +34,7 @@ class SubscriptionsViewModel @Inject constructor(
     private val updateSubscribedArticlesUseCase: UpdateSubscribedArticlesUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SubscriptionState())
+    private val _state = MutableStateFlow(SubscriptionsState())
     val state = _state.asStateFlow()
 
     init {
@@ -62,11 +62,8 @@ class SubscriptionsViewModel @Inject constructor(
             }
 
             is SubscriptionsCommand.InputTopic -> {
-                viewModelScope.launch {
-                    _state.update { previousState ->
-                        val topic = state.value.query.trim()
-                        previousState.copy(query = command.query)
-                    }
+                _state.update { previousState ->
+                    previousState.copy(query = command.query)
                 }
             }
 
@@ -135,7 +132,7 @@ sealed interface SubscriptionsCommand {
     data class RemoveSubscription(val topic: String) : SubscriptionsCommand
 }
 
-data class SubscriptionState(
+data class SubscriptionsState(
     val query: String = "",
     val subscriptions: Map<String, Boolean> = mapOf(),
     val articles: List<Article> = listOf()
